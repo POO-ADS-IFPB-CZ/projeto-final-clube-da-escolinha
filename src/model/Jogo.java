@@ -1,46 +1,40 @@
 package model;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class Pedido {
+public class Jogo {
     private int id;
-    private int clienteId;
-    private List<Integer> jogosIds;
-    private String status;
+    private String nome;
+    private String genero;
+    private double preco;
 
-    public Pedido(int id, int clienteId, List<Integer> jogosIds, String status) {
+    public Jogo(int id, String nome, String genero, double preco) {
         this.id = id;
-        this.clienteId = clienteId;
-        this.jogosIds = jogosIds;
-        this.status = status;
+        this.nome = nome;
+        this.genero = genero;
+        this.preco = preco;
     }
 
+    // Getters e Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
-    public int getClienteId() { return clienteId; }
-    public void setClienteId(int clienteId) { this.clienteId = clienteId; }
-    public List<Integer> getJogosIds() { return jogosIds; }
-    public void setJogosIds(List<Integer> jogosIds) { this.jogosIds = jogosIds; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
+    public double getPreco() { return preco; }
+    public void setPreco(double preco) { this.preco = preco; }
 
     @Override
     public String toString() {
-        String jogos = jogosIds.stream().map(String::valueOf).collect(Collectors.joining(","));
-        return id + ";" + clienteId + ";" + jogos + ";" + status;
+        return id + ";" + nome + ";" + genero + ";" + preco;
     }
 
-    public static Pedido fromString(String linha) {
+    public static Jogo fromString(String linha) {
         String[] dados = linha.split(";");
-        List<Integer> jogos = List.of(dados[2].split(",")).stream()
-                .map(Integer::parseInt)
-                .toList();
-        return new Pedido(
+        return new Jogo(
                 Integer.parseInt(dados[0]),
-                Integer.parseInt(dados[1]),
-                jogos,
-                dados[3]
+                dados[1],
+                dados[2],
+                Double.parseDouble(dados[3])
         );
     }
 }
