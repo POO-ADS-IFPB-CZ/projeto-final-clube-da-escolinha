@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class PedidoDAO {
     private static final String FILE_NAME = "pedidos.txt";
-    
+
     public void salvar(Pedido pedido) {
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(FILE_NAME, true)))) {
             out.println(pedido.toString());
