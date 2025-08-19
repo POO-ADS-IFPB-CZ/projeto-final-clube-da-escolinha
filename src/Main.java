@@ -11,12 +11,10 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        // Instanciando DAOs
         JogoDAO jogoDAO = new JogoDAO();
         ClienteDAO clienteDAO = new ClienteDAO();
         PedidoDAO pedidoDAO = new PedidoDAO();
 
-        // Criando dados
         Jogo j1 = new Jogo(1, "Zelda", "Aventura", 250.0);
         Jogo j2 = new Jogo(2, "God Of War 2018", "Ação-aventura", 300.0);
         jogoDAO.salvar(j1);
