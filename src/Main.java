@@ -9,9 +9,11 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+
         ClienteDAO clienteDAO = new ClienteDAO();
-        clienteDAO.inserir(new Cliente(1, "Luan", "luan@email.com"));
-        clienteDAO.inserir(new Cliente(2, "Maria", "maria@email.com"));
+
+        clienteDAO.inserir(new Cliente(1, "Irineu", "irineu@email.com"));
+        clienteDAO.inserir(new Cliente(2, "Leo", "leo@email.com"));
 
         System.out.println("=== Clientes cadastrados ===");
         for (Cliente c : clienteDAO.listarTodos()) {
@@ -36,10 +38,10 @@ public class Main {
         Jogo jogo2 = jogoDAO.buscarPorId(2);
         System.out.println(jogo2);
 
-        PedidoDAO pedidoDAO = new PedidoDAO();
+        PedidoDAO pedidoDAO = new PedidoDAO(clienteDAO, jogoDAO);
 
-        Pedido pedido1 = new Pedido(1, cliente1.getId(), List.of(jogo2.getId()), "PENDENTE");
-        Pedido pedido2 = new Pedido(2, 2, List.of(1, 2), "PENDENTE");
+        Pedido pedido1 = new Pedido(0, cliente1.getId(), List.of(jogo2.getId()), "PENDENTE");
+        Pedido pedido2 = new Pedido(0, 2, List.of(1, 2), "PENDENTE");
 
         pedidoDAO.inserir(pedido1);
         pedidoDAO.inserir(pedido2);
@@ -49,14 +51,15 @@ public class Main {
             System.out.println(p);
         }
 
-        System.out.println("\n=== Buscar Pedido ID 1 ===");
         Pedido p1 = pedidoDAO.buscarPorId(1);
         System.out.println(p1);
 
-        p1.setStatus("PAGO");
-        pedidoDAO.atualizar(p1);
-        System.out.println("\n=== Pedido ID 1 atualizado ===");
-        System.out.println(pedidoDAO.buscarPorId(1));
+        if (p1 != null) {
+            p1.setStatus("PAGO");
+            pedidoDAO.atualizar(p1);
+            System.out.println("\n=== Pedido ID 1 atualizado ===");
+            System.out.println(pedidoDAO.buscarPorId(1));
+        }
 
         pedidoDAO.remover(2);
         System.out.println("\n=== Pedidos após remoção do ID 2 ===");
