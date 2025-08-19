@@ -8,6 +8,7 @@ import java.util.List;
 public class ClienteDAO implements GenericDAO<Cliente> {
     private static final String FILE_NAME = "clientes.txt";
 
+    // Carrega todos os clientes do arquivo
     private List<Cliente> carregar() {
         List<Cliente> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -16,15 +17,19 @@ public class ClienteDAO implements GenericDAO<Cliente> {
                 try {
                     lista.add(Cliente.fromString(linha));
                 } catch (Exception e) {
-
+                    System.out.println("Erro ao ler linha do arquivo: " + linha);
+                    e.printStackTrace();
                 }
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("Arquivo não encontrado, criando novo arquivo: " + FILE_NAME);
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
         return lista;
     }
 
+    // Gravação da Lista em um arquivo
     private void gravar(List<Cliente> lista) {
         try (PrintWriter out = new PrintWriter(new FileWriter(FILE_NAME))) {
             for (Cliente c : lista) out.println(c.toString());
@@ -35,11 +40,16 @@ public class ClienteDAO implements GenericDAO<Cliente> {
 
     @Override
     public void inserir(Cliente cliente) {
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(FILE_NAME, true)))) {
-            out.println(cliente.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        List<Cliente> lista = carregar();
+
+        // Verificão de ID Duplicado
+        if (lista.stream().anyMatch(c -> c.getId() == cliente.getId())) {
+            System.out.println("Erro: Cliente com ID " + cliente.getId() + " já existe!");
+            return; // ou lançar exceção
         }
+
+        lista.add(cliente);
+        gravar(lista);
     }
 
     @Override
@@ -65,6 +75,7 @@ public class ClienteDAO implements GenericDAO<Cliente> {
                 return;
             }
         }
+        System.out.println("Cliente com ID " + cliente.getId() + " não encontrado para atualizar.");
     }
 
     @Override
