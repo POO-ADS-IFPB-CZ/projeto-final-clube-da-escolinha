@@ -1,42 +1,47 @@
 package model.dao;
 
 import model.Jogo;
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class JogoDAO {
-    private static final String FILE_NAME = "jogos.txt";
+public class JogoDAO implements GenericDAO<Jogo> {
 
-    public void salvar(Jogo jogo) {
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(FILE_NAME, true)))) {
-            out.println(jogo.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private List<Jogo> jogos = new ArrayList<>();
+    private int proximoId = 1;
+
+    @Override
+    public void inserir(Jogo jogo) {
+        jogo.setId(proximoId++);
+        jogos.add(jogo);
     }
 
-    public List<Jogo> listar() {
-        List<Jogo> lista = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
-            String linha;
-            while ((linha = br.readLine()) != null) {
-                lista.add(Jogo.fromString(linha));
+    @Override
+    public List<Jogo> listarTodos() {
+        return new ArrayList<>(jogos);
+    }
+
+    @Override
+    public Jogo buscarPorId(int id) {
+        for (Jogo jogo : jogos) {
+            if (jogo.getId() == id) {
+                return jogo;
             }
-        } catch (IOException e) {}
-        return lista;
+        }
+        return null;
     }
 
-    public void atualizar(List<Jogo> lista) {
-        try (PrintWriter out = new PrintWriter(new FileWriter(FILE_NAME))) {
-            for (Jogo j : lista) out.println(j.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+    @Override
+    public void atualizar(Jogo jogo) {
+        for (int i = 0; i < jogos.size(); i++) {
+            if (jogos.get(i).getId() == jogo.getId()) {
+                jogos.set(i, jogo);
+                return;
+            }
         }
     }
 
-    public void deletar(int id) {
-        List<Jogo> lista = listar();
-        lista.removeIf(j -> j.getId() == id);
-        atualizar(lista);
+    @Override
+    public void remover(int id) {
+        jogos.removeIf(jogo -> jogo.getId() == id);
     }
 }

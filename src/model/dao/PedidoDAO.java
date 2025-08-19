@@ -1,43 +1,47 @@
 package model.dao;
 
 import model.Pedido;
-import java.io.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PedidoDAO {
-    private static final String FILE_NAME = "pedidos.txt";
+public class PedidoDAO implements GenericDAO<Pedido> {
 
-    public void salvar(Pedido pedido) {
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(FILE_NAME, true)))) {
-            out.println(pedido.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private List<Pedido> pedidos = new ArrayList<>();
+    private int proximoId = 1;
+
+    @Override
+    public void inserir(Pedido pedido) {
+        pedido.setId(proximoId++);
+        pedidos.add(pedido);
     }
 
-    public List<Pedido> listar() {
-        List<Pedido> lista = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
-            String linha;
-            while ((linha = br.readLine()) != null) {
-                lista.add(Pedido.fromString(linha));
+    @Override
+    public List<Pedido> listarTodos() {
+        return new ArrayList<>(pedidos);
+    }
+
+    @Override
+    public Pedido buscarPorId(int id) {
+        for (Pedido pedido : pedidos) {
+            if (pedido.getId() == id) {
+                return pedido;
             }
-        } catch (IOException e) {}
-        return lista;
+        }
+        return null;
     }
 
-    public void atualizar(List<Pedido> lista) {
-        try (PrintWriter out = new PrintWriter(new FileWriter(FILE_NAME))) {
-            for (Pedido p : lista) out.println(p.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+    @Override
+    public void atualizar(Pedido pedido) {
+        for (int i = 0; i < pedidos.size(); i++) {
+            if (pedidos.get(i).getId() == pedido.getId()) {
+                pedidos.set(i, pedido);
+                return;
+            }
         }
     }
 
-    public void deletar(int id) {
-        List<Pedido> lista = listar();
-        lista.removeIf(p -> p.getId() == id);
-        atualizar(lista);
+    @Override
+    public void remover(int id) {
+        pedidos.removeIf(pedido -> pedido.getId() == id);
     }
 }
