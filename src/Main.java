@@ -1,70 +1,89 @@
+import controller.ClienteController;
+import controller.JogoController;
+import controller.PedidoController;
 import model.Cliente;
 import model.Jogo;
 import model.Pedido;
-import model.dao.ClienteDAO;
-import model.dao.JogoDAO;
-import model.dao.PedidoDAO;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
+        ClienteController clienteController = new ClienteController();
+        JogoController jogoController = new JogoController();
+        PedidoController pedidoController = new PedidoController();
 
-        ClienteDAO clienteDAO = new ClienteDAO();
+        try {
+            // ===== Clientes =====
+            clienteController.cadastrarCliente(new Cliente(0, "Irineu", "irineu@email.com"));
+            clienteController.cadastrarCliente(new Cliente(0, "Leo", "leo@email.com"));
 
-        clienteDAO.inserir(new Cliente(1, "Irineu", "irineu@email.com"));
-        clienteDAO.inserir(new Cliente(2, "Leo", "leo@email.com"));
+            System.out.println("=== Clientes cadastrados ===");
+            clienteController.listarClientes().forEach(System.out::println);
 
-        System.out.println("=== Clientes cadastrados ===");
-        for (Cliente c : clienteDAO.listarTodos()) {
-            System.out.println(c);
-        }
+            // Buscar cliente
+            System.out.println("\n=== Buscar Cliente ID 1 ===");
+            Optional<Cliente> cliente = Optional.ofNullable(clienteController.buscarCliente(1));
+            if (cliente.isPresent()) {
+                System.out.println(cliente);
+            } else {
+                System.out.println("Cliente não encontrado.");
+            }
 
-        System.out.println("\n=== Buscar Cliente ID 1 ===");
-        Cliente cliente1 = clienteDAO.buscarPorId(1);
-        System.out.println(cliente1);
+            // ===== Jogos =====
+            jogoController.cadastrarJogo(new Jogo(0, "Hollow Knight", "Metroidvania", 39.90));
+            jogoController.cadastrarJogo(new Jogo(0, "The Witcher 3", "RPG", 99.90));
 
-        JogoDAO jogoDAO = new JogoDAO();
+            System.out.println("\n=== Jogos cadastrados ===");
+            jogoController.listarJogos().forEach(System.out::println);
 
-        jogoDAO.inserir(new Jogo(1, "Hollow Knight", "Metroidvania", 39.90));
-        jogoDAO.inserir(new Jogo(2, "The Witcher 3", "RPG", 99.90));
+            // Buscar jogo
+            System.out.println("\n=== Buscar Jogo ID 2 ===");
+            jogoController.buscarJogo(2);
+            Jogo jogo = jogoController.buscarJogo(1);
+            if (jogo != null) {
+                System.out.println(jogo);
+            } else {
+                System.out.println("Jogo não encontrado.");
+            };
 
-        System.out.println("\n=== Jogos cadastrados ===");
-        for (Jogo j : jogoDAO.listarTodos()) {
-            System.out.println(j);
-        }
+            // ===== Pedidos =====
+            Pedido pedido1 = pedidoController.criarPedido(1, List.of(2)); // Cliente 1 compra Jogo 2
+            Pedido pedido2 = pedidoController.criarPedido(2, List.of(1, 2)); // Cliente 2 compra Jogo 1 e 2
 
-        System.out.println("\n=== Buscar Jogo ID 2 ===");
-        Jogo jogo2 = jogoDAO.buscarPorId(2);
-        System.out.println(jogo2);
+            System.out.println("\n=== Pedidos cadastrados ===");
+            pedidoController.listarPedidos().forEach(System.out::println);
 
-        PedidoDAO pedidoDAO = new PedidoDAO(clienteDAO, jogoDAO);
+            // Buscar pedido
+            System.out.println("\n=== Buscar Pedido ID 1 ===");
+            Pedido pedido = pedidoController.buscarPedido(1);
+            if (pedido != null) {
+                System.out.println(pedido);
+            } else {
+                System.out.println("Pedido não encontrado.");
+            }
 
-        Pedido pedido1 = new Pedido(0, cliente1.getId(), List.of(jogo2.getId()), "PENDENTE");
-        Pedido pedido2 = new Pedido(0, 2, List.of(1, 2), "PENDENTE");
+            // Atualizar pedido
+            System.out.println("\n=== Atualizando status do Pedido ID 1 ===");
+            Pedido p1 = pedidoController.buscarPedido(1);
+            if (p1 != null) {
+                p1.setStatus("PAGO");
+                pedidoController.atualizarPedido(p1);
+                System.out.println(p1);
+            } else {
+                System.out.println("Pedido não encontrado.");
+            }
 
-        pedidoDAO.inserir(pedido1);
-        pedidoDAO.inserir(pedido2);
+            // Remover pedido
+            System.out.println("\n=== Cancelando Pedido ID 2 ===");
+            pedidoController.cancelarPedido(2);
 
-        System.out.println("\n=== Pedidos cadastrados ===");
-        for (Pedido p : pedidoDAO.listarTodos()) {
-            System.out.println(p);
-        }
+            System.out.println("\n=== Pedidos após cancelamento ===");
+            pedidoController.listarPedidos().forEach(System.out::println);
 
-        Pedido p1 = pedidoDAO.buscarPorId(1);
-        System.out.println(p1);
-
-        if (p1 != null) {
-            p1.setStatus("PAGO");
-            pedidoDAO.atualizar(p1);
-            System.out.println("\n=== Pedido ID 1 atualizado ===");
-            System.out.println(pedidoDAO.buscarPorId(1));
-        }
-
-        pedidoDAO.remover(2);
-        System.out.println("\n=== Pedidos após remoção do ID 2 ===");
-        for (Pedido p : pedidoDAO.listarTodos()) {
-            System.out.println(p);
+        } catch (Exception e) {
+            System.err.println("Erro: " + e.getMessage());
         }
     }
 }
