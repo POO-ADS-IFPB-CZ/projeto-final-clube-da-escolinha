@@ -1,0 +1,3 @@
+2;The Witcher 3;RPG;99.9
+3;Mortal kombat;luta;50.0
+4;elden ring;souls like;50.0

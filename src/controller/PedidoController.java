@@ -17,7 +17,7 @@ public class PedidoController {
     public PedidoController() {
         this.clienteDAO = new ClienteDAO();
         this.jogoDAO = new JogoDAO();
-        this.pedidoDAO = new PedidoDAO();
+        this.pedidoDAO = new PedidoDAO(clienteDAO, jogoDAO);
     }
 
     // Novo método: criar pedido a partir de clienteId e ids de jogos
