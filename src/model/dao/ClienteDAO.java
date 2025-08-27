@@ -88,4 +88,28 @@ public class ClienteDAO implements GenericDAO<Cliente> {
     public List<Cliente> listar() { return listarTodos(); }
     public void salvar(Cliente c) { inserir(c); }
     public void deletar(int id) { remover(id); }
+    // Buscar clientes por nome
+    public List<Cliente> buscarPorNome(String nome) {
+        List<Cliente> todos = carregar();
+        List<Cliente> resultado = new ArrayList<>();
+        for (Cliente c : todos) {
+            if (c.getNome().toLowerCase().contains(nome.toLowerCase())) {
+                resultado.add(c);
+            }
+        }
+        return resultado;
+    }
+
+
+    // Verifica se já existe cliente com mesmo nome ou email
+    public boolean existeCliente(String nome, String email) {
+        List<Cliente> lista = listar();
+        for (Cliente c : lista) {
+            if (c.getNome().equalsIgnoreCase(nome) || c.getEmail().equalsIgnoreCase(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

@@ -4,6 +4,7 @@ import model.Jogo;
 import model.dao.JogoDAO;
 
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class JogoController {
     private JogoDAO jogoDAO;
@@ -14,6 +15,11 @@ public class JogoController {
 
     // Cadastrar jogo
     public Jogo cadastrarJogo(Jogo jogo) {
+        if (jogoDAO.existeJogo(jogo.getNome())) {
+            JOptionPane.showMessageDialog(null, "Jogo já cadastrado!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return null;
+
+        }
         if (jogo.getNome() == null || jogo.getNome().isEmpty()) {
             System.out.println("Erro: nome do jogo nao pode ser vazio.");
             return null;

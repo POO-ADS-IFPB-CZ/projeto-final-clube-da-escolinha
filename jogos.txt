@@ -1,3 +1,5 @@
 2;The Witcher 3;RPG;99.9
 3;Mortal kombat;luta;50.0
 4;elden ring;souls like;50.0
+5;tekken7;luta;400.0
+6;dead cells;metroidvania;150.0

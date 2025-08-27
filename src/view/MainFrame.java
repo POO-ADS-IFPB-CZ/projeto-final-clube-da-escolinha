@@ -96,10 +96,12 @@ public class MainFrame extends JFrame {
                 if (idt.isEmpty() || nome.isEmpty() || email.isEmpty()) throw new IllegalArgumentException("Campos obrigatórios vazios.");
                 int id = Integer.parseInt(idt);
                 Cliente c = new Cliente(id, nome, email);
-                clienteController.cadastrarCliente(c);
-                model.refresh();
-                clearForm();
-                JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso.");
+                Cliente salvo = clienteController.cadastrarCliente(c);
+                if (salvo != null) {
+                    model.refresh();
+                    clearForm();
+                    JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso.");
+                }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "ID deve ser inteiro.", "Erro", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
@@ -216,10 +218,12 @@ public class MainFrame extends JFrame {
                 double preco = Double.parseDouble(precoS);
                 if (preco < 0) throw new IllegalArgumentException("Preço não pode ser negativo.");
                 Jogo j = new Jogo(id, nome, genero, preco);
-                jogoController.cadastrarJogo(j);
-                model.refresh();
-                clearForm();
-                JOptionPane.showMessageDialog(this, "Jogo adicionado.");
+                Jogo salvo = jogoController.cadastrarJogo(j);
+                if (salvo != null) {
+                    model.refresh();
+                    clearForm();
+                    JOptionPane.showMessageDialog(this, "Jogo adicionado.");
+                }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "ID e Preço devem ser numéricos.", "Erro", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
