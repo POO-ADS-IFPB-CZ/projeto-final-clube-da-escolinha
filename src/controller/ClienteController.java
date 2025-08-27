@@ -2,6 +2,7 @@ package controller;
 
 import model.Cliente;
 import model.dao.ClienteDAO;
+import javax.swing.JOptionPane;
 
 import java.util.List;
 
@@ -14,6 +15,11 @@ public class ClienteController {
 
     // Cadastrar cliente
     public Cliente cadastrarCliente(Cliente cliente) {
+        if (clienteDAO.existeCliente(cliente.getNome(), cliente.getEmail())) {
+            JOptionPane.showMessageDialog(null, "Cliente já cadastrado!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return null;
+
+        }
         if (cliente.getNome() == null || cliente.getNome().isEmpty()) {
             System.out.println("Erro: nome do cliente nao pode ser vazio.");
             return null;

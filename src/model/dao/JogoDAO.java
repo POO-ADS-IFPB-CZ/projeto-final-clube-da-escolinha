@@ -96,4 +96,28 @@ public class JogoDAO implements GenericDAO<Jogo> {
     public List<Jogo> listar() { return listarTodos(); }
     public void salvar(Jogo j) { inserir(j); }
     public void deletar(int id) { remover(id); }
+    // Buscar jogos por nome
+    public List<Jogo> buscarPorNome(String nome) {
+        List<Jogo> todos = carregar();
+        List<Jogo> resultado = new ArrayList<>();
+        for (Jogo j : todos) {
+            if (j.getNome().toLowerCase().contains(nome.toLowerCase())) {
+                resultado.add(j);
+            }
+        }
+        return resultado;
+    }
+
+
+    // Verifica se já existe jogo com mesmo nome
+    public boolean existeJogo(String nome) {
+        List<Jogo> lista = listar();
+        for (Jogo j : lista) {
+            if (j.getNome().equalsIgnoreCase(nome)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }
